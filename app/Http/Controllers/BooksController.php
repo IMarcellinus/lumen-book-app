@@ -32,18 +32,6 @@ class BooksController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi data yang diterima dari permintaan
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'author' => 'required|string|max:255',
-        ]);
-
-        // Jika validasi gagal, kirimkan respon dengan pesan error
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         // Buat buku baru dengan menggunakan data yang diterima dari permintaan
         $book = Book::create($request->all());
 
@@ -53,32 +41,9 @@ class BooksController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validasi request hanya untuk kolom yang diperbarui
-        $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'author' => 'sometimes|required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         // Temukan buku yang akan diperbarui
         $book = Book::findOrFail($id);
-
-        // Perbarui hanya kolom yang ada dalam request
-        if ($request->has('title')) {
-            $book->title = $request->title;
-        }
-
-        if ($request->has('description')) {
-            $book->description = $request->description;
-        }
-
-        if ($request->has('author')) {
-            $book->author = $request->author;
-        }
+        $book->fill($request->all());
 
         // Simpan perubahan
         $book->save();
