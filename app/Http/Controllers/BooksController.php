@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class BooksController extends Controller
 {
@@ -20,14 +18,7 @@ class BooksController extends Controller
     }
     public function show($id)
     {
-        try {
-            $book = Book::findOrFail($id);
-            return response()->json($book, 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Book not found'], 404);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => 'Internal Server Error'], 500);
-        }
+        return Book::findOrFail($id);
     }
 
     public function store(Request $request)

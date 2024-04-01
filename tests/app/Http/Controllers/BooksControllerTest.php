@@ -50,13 +50,13 @@ class BooksControllerTest extends TestCase
             'description' => 'A science fiction masterpiece about Martians invading London',
             'author' => 'H. G. Wells',
         ]);
-    
+
         $response = $this->put("/books/{$book->id}", [
             'title' => 'The War of the Worlds',
             'description' => 'The book is way better than the movie.',
             'author' => 'Wells, H. G.'
         ]);
-    
+
         $response->assertResponseStatus(200);
 
         $response->assertJson(json_encode([
@@ -68,7 +68,7 @@ class BooksControllerTest extends TestCase
         $response->seeInDatabase('books', [
             'title' => 'The War of the Worlds'
         ]);
-    
+
         // Assert the book with id 5 is not in the database
         $response->missingFromDatabase('books', [
             'id' => 5
@@ -76,15 +76,13 @@ class BooksControllerTest extends TestCase
     }
 
     public function test_destroy_should_remove_a_valid_book()
-{
-    $book = Book::factory()->create(); // Membuat buku baru menggunakan factory
+    {
+        $book = Book::factory()->create(); // Membuat buku baru menggunakan factory
 
-    $this->delete("/books/{$book->id}") // Mengirim permintaan DELETE untuk menghapus buku
-         ->assertResponseStatus(200); // Memastikan respons status adalah 204 (No Content)
+        $this->delete("/books/{$book->id}") // Mengirim permintaan DELETE untuk menghapus buku
+            ->assertResponseStatus(200); // Memastikan respons status adalah 204 (No Content)
 
-    $this->missingFromDatabase('books', ['id' => $book->id]); // Memastikan bahwa buku telah dihapus dari basis data
-}
-
-
+        $this->missingFromDatabase('books', ['id' => $book->id]); // Memastikan bahwa buku telah dihapus dari basis data
+    }
 
 }
