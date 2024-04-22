@@ -1,3 +1,65 @@
+# Lumen Book App 
+
+Rekomendasi dari buku :
+[lumen programming guide: writing php microservices, rest and web service apis paul redmond](https://download.e-bookshelf.de/download/0008/0228/16/L-G-0008022816-0015784950.pdf)
+
+## Tech Stack
+
+**Server:** PHP "^8.1", laravel/lumen-framework "^10.0"
+
+**Require Dev:** faker ^1.91, mockery ^1.6, phpunit/phpunit ^10.5
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/IMarcellinus/lumen-book-app.git
+```
+
+Go to the project directory
+
+```bash
+  cd lumen-book-app
+```
+
+Install dependencies
+
+```bash
+  composer update
+```
+
+```bash
+  composer install
+```
+
+[!WARNING]
+Dont forget fill name data in .env
+
+Running database migrations
+```bash
+  php artisan migrate
+```
+
+Running BookSeeder
+```bash
+  php artisan db:seed BookSeeder 
+```
+
+Start the server
+
+```bash
+  php -S localhost:8000 -t public
+```
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  vendor/bin/phpunit 
+```
+
 # Lumen PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
