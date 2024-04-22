@@ -105,6 +105,7 @@ $app->configure('app');
 | can respond to, as well as the controllers that may handle them.
 |
 */
+$app->register(\App\Providers\FractalServiceProvider::class);
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',

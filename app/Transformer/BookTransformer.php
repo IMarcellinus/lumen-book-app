@@ -2,8 +2,8 @@
 
 namespace App\Transformer;
 
-use League\Fractal\TransformerAbstract;
 use App\Models\Book;
+use League\Fractal\TransformerAbstract;
 
 class BookTransformer extends TransformerAbstract
 {
@@ -16,12 +16,12 @@ class BookTransformer extends TransformerAbstract
     public function transform(Book $book)
     {
         return [
-            'id' => $book->id,
-            'title' => $book->title,
+            'id'          => $book->id,
+            'title'       => $book->title,
             'description' => $book->description,
-            'author' => $book->author,
-            'created' => $book->created_at->toIso8601String(),
-            'updated' => $book->updated_at->toIso8601String(),
+            'author'      => $book->author,
+            'created'     => $book->created_at->toIso8601String(),
+            'updated'     => $book->updated_at->toIso8601String(),
         ];
     }
 }

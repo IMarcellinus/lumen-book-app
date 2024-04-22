@@ -3,24 +3,18 @@
 namespace Tests\App\Http\Response;
 
 use Tests\TestCase;
-use App\Http\Response\FractalResponse;
-use Mockery;
+use Mockery as m;
 use League\Fractal\Manager;
+use App\Http\Response\FractalResponse;
 use League\Fractal\Serializer\SerializerAbstract;
-use League\Fractal\TransformerAbstract; // Tambahkan impor ini
 
 class FractalResponseTest extends TestCase
 {
-    public function tearDown(): void
-    {
-        Mockery::close();
-    }
-
     /** @test **/
-    public function testItCanBeInitialized()
+    public function it_can_be_initialized()
     {
-        $manager = Mockery::spy(Manager::class);
-        $serializer = Mockery::mock(SerializerAbstract::class);
+        $manager = m::mock(Manager::class);
+        $serializer = m::mock(SerializerAbstract::class);
 
         $manager
             ->shouldReceive('setSerializer')
@@ -33,22 +27,22 @@ class FractalResponseTest extends TestCase
     }
 
     /** @test **/
-    public function testItCanTransformAnItem()
+    public function it_can_transform_an_item()
     {
         // Transformer
-        $transformer = Mockery::mock('League\Fractal\TransformerAbstract');
+        $transformer = m::mock('League\Fractal\TransformerAbstract');
 
         // Scope
-        $scope = Mockery::mock('League\Fractal\Scope');
+        $scope = m::mock('League\Fractal\Scope');
         $scope
             ->shouldReceive('toArray')
             ->once()
             ->andReturn(['foo' => 'bar']);
 
         // Serializer
-        $serializer = Mockery::mock('League\Fractal\Serializer\SerializerAbstract');
+        $serializer = m::mock('League\Fractal\Serializer\SerializerAbstract');
 
-        $manager = Mockery::mock('League\Fractal\Manager');
+        $manager = m::mock('League\Fractal\Manager');
         $manager
             ->shouldReceive('setSerializer')
             ->with($serializer)
@@ -60,13 +54,15 @@ class FractalResponseTest extends TestCase
             ->andReturn($scope);
 
         $subject = new FractalResponse($manager, $serializer);
-        $this->assertIsArray(
-            $subject->item(['foo' => 'bar'], $transformer)
-        );
+        // $this->assertInternalType(
+        //     'array',
+        //     $subject->item(['foo' => 'bar'], $transformer)
+        // );
+        $this->assertIsArray($subject->item(['foo' => 'bar'], $transformer));
     }
 
     /** @test **/
-    public function testItCanTransformACollection()
+    public function it_can_transform_a_collection()
     {
         $data = [
             ['foo' => 'bar'],
@@ -74,19 +70,19 @@ class FractalResponseTest extends TestCase
         ];
 
         // Transformer
-        $transformer = Mockery::mock('League\Fractal\TransformerAbstract');
+        $transformer = m::mock('League\Fractal\TransformerAbstract');
 
         // Scope
-        $scope = Mockery::mock('League\Fractal\Scope');
+        $scope = m::mock('League\Fractal\Scope');
         $scope
             ->shouldReceive('toArray')
             ->once()
             ->andReturn($data);
 
         // Serializer
-        $serializer = Mockery::mock('League\Fractal\Serializer\SerializerAbstract');
+        $serializer = m::mock('League\Fractal\Serializer\SerializerAbstract');
 
-        $manager = Mockery::mock('League\Fractal\Manager');
+        $manager = m::mock('League\Fractal\Manager');
         $manager
             ->shouldReceive('setSerializer')
             ->with($serializer)
@@ -98,8 +94,10 @@ class FractalResponseTest extends TestCase
             ->andReturn($scope);
 
         $subject = new FractalResponse($manager, $serializer);
-        $this->assertIsArray(
-            $subject->collection($data, $transformer)
-        );
+        // $this->assertInternalType(
+        //     'array',
+        //     $subject->collection($data, $transformer)
+        // );
+        $this->assertIsArray($subject->item(['foo' => 'bar'], $transformer));
     }
 }

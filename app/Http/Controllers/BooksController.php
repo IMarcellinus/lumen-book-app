@@ -5,55 +5,72 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use App\Transformer\BookTransformer;
 
 class BooksController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
+     * GET /books
      * @return array
      */
     public function index()
     {
-        return Book::all()->toArray();
+        return $this->collection(Book::all(), new BookTransformer());
     }
+
     public function show($id)
     {
-        try {
-            $book = Book::findOrFail($id);
-            return response()->json($book);
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(['error' => ['message' => 'Book not found']], 404);
-        }
+        return $this->item(Book::findOrFail($id), new BookTransformer());
     }
 
     public function store(Request $request)
     {
-        // Buat buku baru dengan menggunakan data yang diterima dari permintaan
         $book = Book::create($request->all());
+        $data = $this->item($book, new BookTransformer());
 
-        // Berikan respons berupa data buku yang berhasil dibuat
-        return response()->json($book, 201);
+        return response()->json($data, 201, [
+            'Location' => route('books.show', ['id' => $book->id])
+        ]);
     }
 
     public function update(Request $request, $id)
     {
-        // Temukan buku yang akan diperbarui
-        $book = Book::findOrFail($id);
-        $book->fill($request->all());
+        try {
+            $book = Book::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => [
+                    'message' => 'Book not found'
+                ]
+            ], 404);
+        }
 
-        // Simpan perubahan
+        $book->fill($request->all());
         $book->save();
 
-        // Berikan respons berupa buku yang berhasil diperbarui
-        return response()->json($book, 200);
+        return $this->item($book, new BookTransformer());
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
-        $book = Book::findOrFail($id);
-        $book->delete();
+        try {
+            $book = Book::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'error' => [
+                    'message' => 'Book not found'
+                ]
+            ], 404);
+        }
 
-        return response()->json(['deleted' => true], 200);
+        $book->delete();
+        return response(null, 204);
+    }
+
+    public function destroyall()
+    {
+        $book = Book::truncate();
+        // $book->delete();x
+        return response(null, 204);
     }
 }

@@ -18,7 +18,11 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/books', 'BooksController@index');
-$router->get('/books/{id}', 'BooksController@show');
+$router->get('/books/{id:[\d]+}', [
+    'as' => 'books.show',
+    'uses' => 'BooksController@show'
+]);
 $router->post('/books', 'BooksController@store');
-$router->put('/books/{id}', 'BooksController@update');
-$router->delete('/books/{id}', 'BooksController@delete');
+$router->put('/books/{id:[\d]+}', 'BooksController@update');
+$router->delete('/books/{id:[\d]+}', 'BooksController@destroy');
+$router->delete('/books', 'BooksController@destroyall');
