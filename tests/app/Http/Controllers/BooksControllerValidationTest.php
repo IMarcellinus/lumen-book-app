@@ -36,7 +36,7 @@ class BooksControllerValidationTest extends TestCase
     public function it_validates_validates_passed_fields_when_updating_a_book()
     {
         // $book = factory(\App\Book::class)->create();
-        $book = Book::factory(1)->create();
+        $book = Book::factory()->create();
 
         $this->put("/books/{$book->id}", [], ['Accept' => 'application/json']);
 
@@ -60,8 +60,7 @@ class BooksControllerValidationTest extends TestCase
     public function title_fails_create_validation_when_just_too_long()
     {
         // Creating a book
-        // $book = factory(\App\Book::class)->make();
-        $book = Book::factory(1)->create();
+        $book = Book::factory()->create();
         $book->title = str_repeat('a', 256);
 
         $this->post("/books", [
@@ -73,17 +72,17 @@ class BooksControllerValidationTest extends TestCase
         $this
             ->seeStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->seeJson([
-                'title' => ["The title may not be greater than 255 characters."]
+                'title' => ["The title must not be greater than 255 characters."] // Adjusted assertion
             ])
             ->notSeeInDatabase('books', ['title' => $book->title]);
     }
+
 
     /** @test **/
     public function title_fails_update_validation_when_just_too_long()
     {
         // Updating a book
-        // $book = factory(\App\Book::class)->create();
-        $book = Book::factory(1)->create(); 
+        $book = Book::factory()->create();
         $book->title = str_repeat('a', 256);
 
         $this->put("/books/{$book->id}", [
@@ -95,7 +94,7 @@ class BooksControllerValidationTest extends TestCase
         $this
             ->seeStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->seeJson([
-                'title' => ["The title may not be greater than 255 characters."]
+                'title' => ["The title must not be greater than 255 characters."] // Adjusted assertion
             ])
             ->notSeeInDatabase('books', ['title' => $book->title]);
     }
@@ -105,7 +104,7 @@ class BooksControllerValidationTest extends TestCase
     {
         // Creating a new Book
         // $book = factory(\App\Book::class)->make();
-        $book = Book::factory(1)->create(); 
+        $book = Book::factory()->create();
         $book->title = str_repeat('a', 255);
 
         $this->post("/books", [
@@ -124,7 +123,7 @@ class BooksControllerValidationTest extends TestCase
     {
         // Updating a book
         // $book = factory(\App\Book::class)->create();
-        $book = Book::factory(1)->create(); 
+        $book = Book::factory()->create();
         $book->title = str_repeat('a', 255);
 
         $this->put("/books/{$book->id}", [
